@@ -1,4 +1,3 @@
 django
-python-libmemcached
-pyrex
+python-memcached
 South
