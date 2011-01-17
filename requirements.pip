@@ -1,0 +1,4 @@
+django
+python-libmemcached
+pyrex
+South
