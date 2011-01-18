@@ -29,14 +29,14 @@ def article(request, article_id):
 
 def dislike(request, article_id, comment_id):
     comment = Comment.objects.get(pk=comment_id)
-    comment.like_it()
+    comment.dislike_it()
     comment.save()
     return HttpResponseRedirect(reverse('article',
                                     kwargs={'article_id': article_id}))
 
 def like(request, article_id, comment_id):
     comment = Comment.objects.get(pk=comment_id)
-    comment.dislike_it()
+    comment.like_it()
     comment.save()
     return HttpResponseRedirect(reverse('article',
                                     kwargs={'article_id': article_id}))

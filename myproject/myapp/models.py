@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from myapp.utils import invalidate_cache
+from myapp.utils import invalidate_cache_handler
 
 # Create your models here.
 class Article(models.Model):
@@ -29,6 +29,8 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    # cache_version_token = 'updated_at'
+    
     def like_it(self):
         self.likes += 1
     
@@ -43,4 +45,4 @@ class Comment(models.Model):
         return u" - ".join(map(str, [self.article, self.user, self.content]))
     
 
-post_save.connect(invalidate_cache, sender=Comment)
+post_save.connect(invalidate_cache_handler, sender=Comment)
