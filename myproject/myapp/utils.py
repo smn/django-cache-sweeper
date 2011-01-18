@@ -55,7 +55,8 @@ def update_cache_token_for_record_with_counter(instance):
     Update the cache token with an internal memcached counter. 
     """
     cache_key = cache_token_key_for_record(instance)
-    if cache.get(cache_key) == None:
+    value = cache.get(cache_key)
+    if value == None or not isinstance(value, int):
         cache.set(cache_key, 0, 0) # 0 = no time based expiry
     else:
         cache.incr(cache_key)
