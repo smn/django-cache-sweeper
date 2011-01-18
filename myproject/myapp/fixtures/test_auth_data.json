@@ -1,0 +1,18 @@
+[{
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+        "username": "sdehaan",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": "2011-01-18 01:26:17",
+        "groups": [],
+        "user_permissions": [],
+        "password": "sha1$6fc39$583e249e4d2f958f27faf0cd21a2738fe129ec0d",
+        "email": "simon@praekeltfoundation.org",
+        "date_joined": "2011-01-17 12:55:08"
+    }
+}]

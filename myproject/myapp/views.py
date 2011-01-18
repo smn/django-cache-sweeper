@@ -28,13 +28,15 @@ def article(request, article_id):
 
 
 def dislike(request, article_id, comment_id):
-    Comment.objects.filter(article=article_id,pk=comment_id) \
-                                            .update(dislikes=F('dislikes')+1)
+    comment = Comment.objects.get(pk=comment_id)
+    comment.like_it()
+    comment.save()
     return HttpResponseRedirect(reverse('article',
                                     kwargs={'article_id': article_id}))
 
 def like(request, article_id, comment_id):
-    Comment.objects.filter(article=article_id,pk=comment_id) \
-                                                .update(likes=F('likes')+1)
+    comment = Comment.objects.get(pk=comment_id)
+    comment.dislike_it()
+    comment.save()
     return HttpResponseRedirect(reverse('article',
                                     kwargs={'article_id': article_id}))

@@ -29,11 +29,18 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def like_it(self):
+        self.likes += 1
+    
+    def dislike_it(self):
+        self.dislikes += 1
+    
     class Meta:
-        get_latest_by = ordering = ['created_at']
+        get_latest_by = 'created_at'
+        ordering = ['created_at']
     
     def __unicode__(self):
-        return u" - ".join([self.article, self.user, self.content])
+        return u" - ".join(map(str, [self.article, self.user, self.content]))
     
 
 post_save.connect(invalidate_cache, sender=Comment)
