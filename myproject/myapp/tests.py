@@ -4,20 +4,7 @@ from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 from django.utils.hashcompat import md5_constructor
 from myproject.myapp.models import Comment, Article
-from myproject.myapp.utils import cache_token_key_for_record
-
-def generate_fragment_key(record, *cache_keys):
-    unique_fragment_key = u":".join(map(lambda key: urlquote(str(key)), cache_keys))
-    unique_fragment_key_hash = md5_constructor(unique_fragment_key)
-    model_version_key = cache_token_key_for_record(record)
-    model_current_version = cache.get(model_version_key, 0)
-    cache_key = 'template.%s.%s.%s' % (
-            model_version_key, 
-            model_current_version,
-            unique_fragment_key_hash.hexdigest()
-    )
-    return cache_key
-    
+from myproject.myapp.utils import cache_token_key_for_record, generate_fragment_cache_key_for_record
 
 class FragmentCacheInvalidation(TestCase):
     
@@ -61,7 +48,7 @@ class FragmentCacheInvalidation(TestCase):
         response = client.get(reverse('articles'), follow=True)
         
         # assert the cache hit
-        cache_key = generate_fragment_key(comment, "comment.xml")
+        cache_key = generate_fragment_cache_key_for_record(comment, "comment.xml")
         self.assertTrue(cache.get(cache_key))
         
         # modifying the model should change the cache
@@ -69,7 +56,7 @@ class FragmentCacheInvalidation(TestCase):
         comment.save()
         
         # assert the changed cache key
-        new_cache_key = generate_fragment_key(comment, "comments.xml")
+        new_cache_key = generate_fragment_cache_key_for_record(comment, "comment.xml")
         self.assertNotEquals(cache_key, new_cache_key)
         
         # assert the cache miss

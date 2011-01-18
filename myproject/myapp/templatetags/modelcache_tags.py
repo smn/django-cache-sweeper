@@ -1,11 +1,10 @@
 from django.template import Library, Node, TemplateSyntaxError, Variable, VariableDoesNotExist
 from django.template import resolve_variable
 from django.core.cache import cache
-from django.utils.http import urlquote
 from django.utils.hashcompat import md5_constructor
 from django.db.models import Model
 from django.conf import settings
-from myproject.myapp.utils import cache_token_key_for_record
+from myproject.myapp.utils import cache_token_key_for_record, generate_fragment_cache_key_for_record
 
 register = Library()
 
@@ -40,19 +39,9 @@ class ModelCacheNode(Node):
     def render(self, context):
         expire_time = self.get_expire_time(context)
         model = self.get_model(context)
-        unique_fragment_key = u':'.join([
-                                        urlquote(var.resolve(context)) 
-                                        for var in self.cache_key_vars
-                                    ])
-        unique_fragment_key_hash = md5_constructor(unique_fragment_key)
-        model_version_key = cache_token_key_for_record(model)
-        # default to zero for versioning if it doesn't exist
-        model_current_version = cache.get(model_version_key, 0)
-        cache_key = 'template.%s.%s.%s' % (
-                model_version_key, 
-                model_current_version,
-                unique_fragment_key_hash.hexdigest()
-        )
+        unique_fragment_cache_keys = [var.resolve(context) 
+                                        for var in self.cache_key_vars]
+        cache_key = generate_fragment_cache_key_for_record(model, *unique_fragment_cache_keys)
         value = cache.get(cache_key)
         if value is None:
             value = self.nodelist.render(context)
