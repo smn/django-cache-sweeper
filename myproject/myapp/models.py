@@ -2,13 +2,19 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from myapp.utils import invalidate_cache
 
 # Create your models here.
 class Article(models.Model):
     """An article"""
     title = models.CharField(blank=True, max_length=100)
     text = models.TextField(blank=True)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        get_latest_by = 'created_at'
+    
     def __unicode__(self):
         return self.title
     
@@ -20,22 +26,14 @@ class Comment(models.Model):
     content = models.TextField(blank=True)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        get_latest_by = ordering = ['created_at']
     
     def __unicode__(self):
         return u" - ".join([self.article, self.user, self.content])
     
 
-def cache_key(record):
-    klass = record.__class__
-    return ":".join([klass.__name__, klass.__module__, record.pk])
-
-def increment_cached_version(sender, **kwargs):
-    created = kwargs.get('created', False)
-    instance = kwargs.get('instance')
-    cache_key = cache_key(instance)
-    if not cache.get(cache_key)
-        cache.set(cache_key, 0)
-    else:
-        cache.incr(cache_key)
-
-post_save.connect(increment_cached_version, sender=Comment)
+post_save.connect(invalidate_cache, sender=Comment)

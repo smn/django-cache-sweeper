@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}
+    {{article.title}}
+{% endblock %}
+
+{% block content %}
+    <h1>{{article.title}}</h1>
+    <p>
+        {{article.text|markdown}}
+    </p>
+    
+    <h2>Comments:</h2>
+    {% for comment in article.comment_set.all %}
+        <p>
+            <strong>{{comment.user}}</strong> said at {{comment.created_at}}:<br/>
+            {{comment.content|markdown}}
+            <br/>
+            <a href={% url like article_id=article.pk,comment_id=comment.pk %}>Like ({{comment.likes}})</a>
+            <a href={% url dislike article_id=article.pk,comment_id=comment.pk %}>Dislike ({{comment.dislikes}})</a>
+        </p>
+    {% endfor %}
+    
+    <h2>Leave a comment</h2>
+    <form action="{% url article article_id=article.pk %}" method="post" accept-charset="utf-8">
+        <table>
+            {{comment_form.as_table}}
+            <tr>
+                <th></th>
+                <td><input type="submit" value="ok!"></td>
+            </tr>
+        </table>
+        {% csrf_token %}
+    </form>
+{% endblock %}
