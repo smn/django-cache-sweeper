@@ -57,8 +57,8 @@ class Vote(models.Model):
     def __unicode__(self):
         return u"Vote %s1 for %s" % (self.direction, self.comment)
 
-def invalidate_vote(sender, **kwargs):
+def invalidate_vote_cache(sender, **kwargs):
     instance = kwargs.get('instance')
-    invalidate_cache_for(instance.comment, using='updated_at')
+    invalidate_cache_for(instance.comment)
 
-post_save.connect(invalidate_vote, sender=Vote)
+post_save.connect(invalidate_vote_cache, sender=Vote)
