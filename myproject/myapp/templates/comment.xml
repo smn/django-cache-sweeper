@@ -5,7 +5,7 @@
     <strong>{{comment.user}}</strong> said at {{comment.created_at}}:<br/>
     {{comment.content|markdown}}
     <br/>
-    <a href={% url like article_id=article.pk,comment_id=comment.pk %}>Like ({{comment.likes}})</a>
-    <a href={% url dislike article_id=article.pk,comment_id=comment.pk %}>Dislike ({{comment.dislikes}})</a>
+    <a href={% url like article_id=article.pk,comment_id=comment.pk %}>Like ({{comment.likes.count}})</a>
+    <a href={% url dislike article_id=article.pk,comment_id=comment.pk %}>Dislike ({{comment.dislikes.count}})</a>
 </p>
 {% endmodelcache %}

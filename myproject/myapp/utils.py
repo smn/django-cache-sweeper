@@ -17,27 +17,27 @@ def cache_token_key_for_record(record):
 
 def invalidate_cache_handler(sender, **kwargs):
     """
-    signal handler
+    signal handler for invalidating the cache for a single record
     """
     instance = kwargs.get('instance')
     return invalidate_cache_for(instance)
 
-def invalidate_cache_for(record):
+
+def invalidate_cache_for(record,using=None):
     """
     invalidate the cache for the given ORM record
     """
-    return update_cache_token_for_record(record)
+    return update_cache_token_for_record(record, using)
 
-def update_cache_token_for_record(instance):
+def update_cache_token_for_record(instance, using):
     """
     update the cached versioning token for the given record. All 
     {% modelcache %} fragment caches use the cached version token to
     store the cached data. If the token is changed all fragment caches
     will eventually expire.
     """
-    token_attr = getattr(instance, 'cache_version_token', None)
-    if token_attr:
-        return update_cache_token_for_record_with_attribute(instance, token_attr)
+    if using:
+        return update_cache_token_for_record_with_attribute(instance, using)
     else:
         return update_cache_token_for_record_with_counter(instance)
 
@@ -67,7 +67,7 @@ def generate_fragment_cache_key_for_record(record, *cache_keys):
     unique_fragment_key_hash = md5_constructor(unique_fragment_key)
     record_version_key = cache_token_key_for_record(record)
     record_current_version = cache.get(record_version_key)
-    cache_key = 'template.%s.%s.%s' % (
+    cache_key = 'modelcache.%s.%s.%s' % (
             record_version_key, 
             record_current_version,
             unique_fragment_key_hash.hexdigest()

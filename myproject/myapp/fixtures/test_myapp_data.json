@@ -13,12 +13,10 @@
     "model": "myapp.comment",
     "fields": {
         "created_at": "2011-01-18 02:14:14",
-        "dislikes": 20,
         "updated_at": "2011-01-18 04:15:57",
         "content": "asdasd",
         "user": 1,
-        "article": 1,
-        "likes": 13
+        "article": 1
     }
 },
 {
@@ -26,12 +24,10 @@
     "model": "myapp.comment",
     "fields": {
         "created_at": "2011-01-18 02:14:46",
-        "dislikes": 9,
         "updated_at": "2011-01-18 02:14:46",
         "content": "asdasd",
         "user": 1,
-        "article": 1,
-        "likes": 8
+        "article": 1
     }
 },
 {
@@ -39,11 +35,9 @@
     "model": "myapp.comment",
     "fields": {
         "created_at": "2011-01-18 02:15:02",
-        "dislikes": 7,
         "updated_at": "2011-01-18 02:15:02",
         "content": "asdasd",
         "user": 1,
-        "article": 1,
-        "likes": 6
+        "article": 1
     }
 }]

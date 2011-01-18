@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from myapp.utils import invalidate_cache_handler
+from myapp.utils import invalidate_cache_handler, invalidate_cache_for
 
 # Create your models here.
 class Article(models.Model):
@@ -24,25 +24,41 @@ class Comment(models.Model):
     user = models.ForeignKey(User)
     article = models.ForeignKey(Article)
     content = models.TextField(blank=True)
-    likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    # cache_version_token = 'updated_at'
+    def likes(self):
+        return self.vote_set.filter(direction='+')
     
     def like_it(self):
-        self.likes += 1
+        return self.vote_set.create(direction='+')
+    
+    def dislikes(self):
+        return self.vote_set.filter(direction='-')
     
     def dislike_it(self):
-        self.dislikes += 1
+        return self.vote_set.create(direction='-')
     
     class Meta:
         get_latest_by = 'created_at'
         ordering = ['created_at']
     
     def __unicode__(self):
-        return u" - ".join(map(str, [self.article, self.user, self.content]))
+        return u"Comment: %s" % u" - ".join(map(str, [self.article, self.user, self.content]))
     
 
-post_save.connect(invalidate_cache_handler, sender=Comment)
+class Vote(models.Model):
+    """A like or a dislike"""
+    comment = models.ForeignKey(Comment)
+    direction = models.CharField(choices=(('+','Like'),('-','Dislike')), max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __unicode__(self):
+        return u"Vote %s1 for %s" % (self.direction, self.comment)
+
+def invalidate_vote(sender, **kwargs):
+    instance = kwargs.get('instance')
+    invalidate_cache_for(instance.comment, using='updated_at')
+
+post_save.connect(invalidate_vote, sender=Vote)
