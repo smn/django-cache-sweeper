@@ -9,32 +9,32 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Adding model 'Vote'
-        db.create_table('myapp_vote', (
+        db.create_table('cachesweeper_vote', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('comment', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['myapp.Comment'])),
+            ('comment', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['cachesweeper.Comment'])),
             ('direction', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
-        db.send_create_signal('myapp', ['Vote'])
+        db.send_create_signal('cachesweeper', ['Vote'])
 
         # Deleting field 'Comment.likes'
-        db.delete_column('myapp_comment', 'likes')
+        db.delete_column('cachesweeper_comment', 'likes')
 
         # Deleting field 'Comment.dislikes'
-        db.delete_column('myapp_comment', 'dislikes')
+        db.delete_column('cachesweeper_comment', 'dislikes')
 
 
     def backwards(self, orm):
         
         # Deleting model 'Vote'
-        db.delete_table('myapp_vote')
+        db.delete_table('cachesweeper_vote')
 
         # Adding field 'Comment.likes'
-        db.add_column('myapp_comment', 'likes', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
+        db.add_column('cachesweeper_comment', 'likes', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
 
         # Adding field 'Comment.dislikes'
-        db.add_column('myapp_comment', 'dislikes', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
+        db.add_column('cachesweeper_comment', 'dislikes', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
 
 
     models = {
@@ -74,7 +74,7 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'myapp.article': {
+        'cachesweeper.article': {
             'Meta': {'object_name': 'Article'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -82,18 +82,18 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
-        'myapp.comment': {
+        'cachesweeper.comment': {
             'Meta': {'ordering': "['created_at']", 'object_name': 'Comment'},
-            'article': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['myapp.Article']"}),
+            'article': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cachesweeper.Article']"}),
             'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
-        'myapp.vote': {
+        'cachesweeper.vote': {
             'Meta': {'object_name': 'Vote'},
-            'comment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['myapp.Comment']"}),
+            'comment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cachesweeper.Comment']"}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'direction': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -101,4 +101,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['myapp']
+    complete_apps = ['cachesweeper']

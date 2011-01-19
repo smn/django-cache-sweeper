@@ -4,11 +4,11 @@ from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
 from django.db.models import Model
 from django.conf import settings
-from myproject.myapp.utils import cache_token_key_for_record, generate_fragment_cache_key_for_record
+from cachesweeper.utils import cache_token_key_for_record, generate_fragment_cache_key_for_record
 
 register = Library()
 
-class ModelCacheNode(Node):
+class CacheSweeperNode(Node):
     def __init__(self, nodelist, model, expire_time, cache_keys):
         self.nodelist = nodelist
         self.model_var = Variable(model)
@@ -19,21 +19,21 @@ class ModelCacheNode(Node):
         try:
             expire_time = self.expire_time_var.resolve(context)
         except VariableDoesNotExist:
-            raise TemplateSyntaxError('"modelcache" tag got an unknown variable: %r' % self.expire_time_var.var)
+            raise TemplateSyntaxError('"cachesweeper" tag got an unknown variable: %r' % self.expire_time_var.var)
         
         try:
             return int(expire_time)
         except (ValueError, TypeError):
-            raise TemplateSyntaxError('"modelcache" tag got a non-integer timeout value: %r' % expire_time)
+            raise TemplateSyntaxError('"cachesweeper" tag got a non-integer timeout value: %r' % expire_time)
         
     
     def get_model(self, context):
         try:
             model = self.model_var.resolve(context)
         except VariableDoesNotExist:
-            raise TemplateSyntaxError('"modelcache" tag got an unknown variable: %r' % self.model_var.var)
+            raise TemplateSyntaxError('"cachesweeper" tag got an unknown variable: %r' % self.model_var.var)
         if not isinstance(model,Model):
-            raise TemplateSyntaxError('"modelcache" tag model should be an instance of django.db.models.Model, got: %s' % model)
+            raise TemplateSyntaxError('"cachesweeper" tag model should be an instance of django.db.models.Model, got: %s' % model)
         return model
     
     def render(self, context):
@@ -52,11 +52,11 @@ class ModelCacheNode(Node):
 
 
 @register.tag
-def modelcache(parser, token):
-    nodelist = parser.parse(('endmodelcache',))
+def cachesweeper(parser, token):
+    nodelist = parser.parse(('endcachesweeper',))
     parser.delete_first_token()
     tokens = token.split_contents()
     if len(tokens) < 4:
         raise TemplateSyntaxError(u"'%s' tag requires at least 3 arguments" % tokens[0])
     model, expire_time, cache_keys = tokens[1], tokens[2], tokens[3:]
-    return ModelCacheNode(nodelist, model, expire_time, cache_keys)
+    return CacheSweeperNode(nodelist, model, expire_time, cache_keys)

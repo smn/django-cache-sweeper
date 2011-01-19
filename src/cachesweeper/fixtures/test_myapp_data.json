@@ -1,6 +1,6 @@
 [{
     "pk": 1,
-    "model": "myapp.article",
+    "model": "cachesweeper.article",
     "fields": {
         "text": "This is the article text\r\n\r\nit should be formatted with *Markdown*",
         "created_at": "2011-01-18 01:28:07",
@@ -10,7 +10,7 @@
 },
 {
     "pk": 1,
-    "model": "myapp.comment",
+    "model": "cachesweeper.comment",
     "fields": {
         "created_at": "2011-01-18 02:14:14",
         "updated_at": "2011-01-18 04:15:57",
@@ -21,7 +21,7 @@
 },
 {
     "pk": 2,
-    "model": "myapp.comment",
+    "model": "cachesweeper.comment",
     "fields": {
         "created_at": "2011-01-18 02:14:46",
         "updated_at": "2011-01-18 02:14:46",
@@ -32,7 +32,7 @@
 },
 {
     "pk": 3,
-    "model": "myapp.comment",
+    "model": "cachesweeper.comment",
     "fields": {
         "created_at": "2011-01-18 02:15:02",
         "updated_at": "2011-01-18 02:15:02",

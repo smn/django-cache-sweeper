@@ -3,8 +3,8 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 from django.utils.hashcompat import md5_constructor
-from myproject.myapp.models import Comment, Article
-from myproject.myapp.utils import cache_token_key_for_record, generate_fragment_cache_key_for_record
+from cachesweeper.models import Comment, Article
+from cachesweeper.utils import cache_token_key_for_record, generate_fragment_cache_key_for_record
 
 class FragmentCacheInvalidation(TestCase):
     
@@ -43,9 +43,20 @@ class FragmentCacheInvalidation(TestCase):
     def test_fragment_cache_miss(self):
         # get the comment we want to invalidate the cache for
         comment = Comment.objects.latest()
-        # populate the fragment cache
-        client = Client()
-        response = client.get(reverse('articles'), follow=True)
+        
+        # cache the fragment
+        from django.template import Context, Template
+        template = Template("""
+        {% load cachesweeper_tags %}
+        {% cachesweeper comment 500 "comment.xml" %}
+        <p>
+            <strong>{{comment.user}}</strong> said at {{comment.created_at}}:<br/>
+            {{comment.content}}
+            <br/>
+        </p>
+        {% endcachesweeper %}
+        """)
+        template.render(Context({'comment': comment}))
         
         # assert the cache hit
         cache_key = generate_fragment_cache_key_for_record(comment, "comment.xml")

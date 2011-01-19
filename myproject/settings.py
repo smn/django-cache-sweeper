@@ -95,7 +95,6 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.markup',
     'south',
-    'myapp',
     'cachesweeper',
 )
 

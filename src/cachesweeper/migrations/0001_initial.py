@@ -9,36 +9,36 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Adding model 'Article'
-        db.create_table('myapp_article', (
+        db.create_table('cachesweeper_article', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
-        db.send_create_signal('myapp', ['Article'])
+        db.send_create_signal('cachesweeper', ['Article'])
 
         # Adding model 'Comment'
-        db.create_table('myapp_comment', (
+        db.create_table('cachesweeper_comment', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('article', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['myapp.Article'])),
+            ('article', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['cachesweeper.Article'])),
             ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('likes', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('dislikes', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
-        db.send_create_signal('myapp', ['Comment'])
+        db.send_create_signal('cachesweeper', ['Comment'])
 
 
     def backwards(self, orm):
         
         # Deleting model 'Article'
-        db.delete_table('myapp_article')
+        db.delete_table('cachesweeper_article')
 
         # Deleting model 'Comment'
-        db.delete_table('myapp_comment')
+        db.delete_table('cachesweeper_comment')
 
 
     models = {
@@ -78,7 +78,7 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'myapp.article': {
+        'cachesweeper.article': {
             'Meta': {'object_name': 'Article'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -86,9 +86,9 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
-        'myapp.comment': {
+        'cachesweeper.comment': {
             'Meta': {'object_name': 'Comment'},
-            'article': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['myapp.Article']"}),
+            'article': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cachesweeper.Article']"}),
             'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'dislikes': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -99,4 +99,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['myapp']
+    complete_apps = ['cachesweeper']
