@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+def listify(filename):
+    return filter(None, open(filename,'r').read().split('\n'))
+
 setup(
     name = "dango-cache-sweeper",
     version = "0.1",
@@ -11,15 +14,7 @@ setup(
     author_email = "simon@praekeltfoundation.org",
     packages = find_packages('src'),
     package_dir = {'': 'src'},
-    install_requires = map(lambda s: s.strip(), open('requirements.pip','r').readlines()),
-    classifiers = [
-        'Development Status :: 4 - Beta',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Framework :: Django',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-    ]
+    install_requires = listify('requirements.pip'),
+    classifiers = listify('CLASSIFIERS.txt')
 )
 
