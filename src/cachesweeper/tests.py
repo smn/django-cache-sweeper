@@ -30,8 +30,8 @@ class FragmentCacheInvalidation(TestCase):
         # get the version key for this comment
         version_cache_key = cache_token_key_for_record(comment)
         # get the original version, should be zero
-        original_version = cache.get(version_cache_key)
-        self.assertTrue(original_version)
+        original_version = cache.get(version_cache_key, None)
+        self.assertNotEquals(original_version, None)
         # change the comment & save, should increment the version value in
         # memcached
         comment.like_it()
