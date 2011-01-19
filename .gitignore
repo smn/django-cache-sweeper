@@ -2,3 +2,5 @@ ve
 *.pyc
 *.db
 *.egg-info
+build/
+dist/

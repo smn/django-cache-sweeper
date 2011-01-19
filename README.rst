@@ -1,9 +1,10 @@
+==================================
 Django Fragment Cache Invalidation
 ==================================
 
 Fragment cache invalidation by using a per model version token to prefix the cache keys. The version token can either be an internal memcached counter or a timestamped attribute from the model, such as `updated_at`.
 
-installation
+Installation
 ------------
 
 Install with `pip` or with `python setup.py install` and add 'cachesweeper' to your `settings.INSTALLED_APPS`
@@ -16,7 +17,9 @@ An example setup; an article has many comments, each comment is cached, a single
     
 **Template fragment caching**
 
-`{% cachesweeper %}` takes a Django ORM model as its first argument, the expiry time as its second and any following arguments are used to construct the rest of the cache key.
+`{% cachesweeper %}` takes a Django ORM model as its first argument, the expiry time as its second and any following arguments are used to construct the rest of the cache key
+
+::
 
     {% load markup %}
     {% load cachesweeper_tags %}
@@ -33,6 +36,8 @@ An example setup; an article has many comments, each comment is cached, a single
 **Invalidating the fragment when the model changes**
 
 On a post_save invalidate the cache for the given model. There are two options, either have Memcached keep an internal version counter for each model or using the keyword `using` as a means of versioning the cache.
+
+::
     
     from cachesweeper.utils import invalidate_cache_for
     
@@ -50,3 +55,4 @@ On a post_save invalidate the cache for the given model. There are two options, 
         invalidate_cache_for(article, using='updated_at')
     
     post_save.connect(invalidate_article_cache, sender=Article)
+

@@ -9,7 +9,7 @@ setup(
     url = 'http://github.com/smn/django-cache-sweeper',
     license = 'BSD',
     description = "Lazy Django fragment cache sweeping",
-    long_description = open('README.md', 'r').read(),
+    long_description = open('README.rst', 'r').read(),
     author = 'Simon de Haan',
     author_email = "simon@praekeltfoundation.org",
     packages = find_packages('src'),
