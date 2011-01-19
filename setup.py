@@ -4,7 +4,7 @@ def listify(filename):
     return filter(None, open(filename,'r').read().split('\n'))
 
 setup(
-    name = "dango-cache-sweeper",
+    name = "django-cache-sweeper",
     version = "0.1",
     url = 'http://github.com/smn/django-cache-sweeper',
     license = 'BSD',
