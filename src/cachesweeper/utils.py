@@ -32,7 +32,7 @@ def invalidate_cache_for(record,using=None):
 def update_cache_token_for_record(instance, using):
     """
     update the cached versioning token for the given record. All 
-    {% modelcache %} fragment caches use the cached version token to
+    {% cachesweeper %} fragment caches use the cached version token to
     store the cached data. If the token is changed all fragment caches
     will eventually expire.
     """
@@ -68,7 +68,7 @@ def generate_fragment_cache_key_for_record(record, *cache_keys):
     unique_fragment_key_hash = md5_constructor(unique_fragment_key)
     record_version_key = cache_token_key_for_record(record)
     record_current_version = cache.get(record_version_key)
-    cache_key = 'modelcache.%s.%s.%s' % (
+    cache_key = 'cachesweeper.%s.%s.%s' % (
             record_version_key, 
             record_current_version,
             unique_fragment_key_hash.hexdigest()

@@ -8,7 +8,7 @@ from cachesweeper.utils import cache_token_key_for_record, generate_fragment_cac
 
 class FragmentCacheInvalidation(TestCase):
     
-    fixtures = ['test_auth_data', 'test_myapp_data']
+    fixtures = ['test_auth_data', 'test_cachesweeper_data']
     
     def setUp(self):
         pass

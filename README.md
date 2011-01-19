@@ -10,11 +10,11 @@ An example setup; an article has many comments, each comment is cached, a single
     
 **Template fragment caching**
 
-`{% modelcache %}` takes a Django ORM model as its first argument, the expiry time as its second and any following arguments are used to construct the rest of the cache key.
+`{% cachesweeper %}` takes a Django ORM model as its first argument, the expiry time as its second and any following arguments are used to construct the rest of the cache key.
 
     {% load markup %}
-    {% load modelcache_tags %}
-    {% modelcache comment 500 "comment.xml" %}
+    {% load cachesweeper_tags %}
+    {% cachesweeper comment 500 "comment.xml" %}
     <p>
         <strong>{{comment.user}}</strong> said at {{comment.created_at}}:<br/>
         {{comment.content|markdown}}
@@ -22,13 +22,13 @@ An example setup; an article has many comments, each comment is cached, a single
         <a href={% url like article_id=article.pk,comment_id=comment.pk %}>Like ({{comment.likes.count}})</a>
         <a href={% url dislike article_id=article.pk,comment_id=comment.pk %}>Dislike ({{comment.dislikes.count}})</a>
     </p>
-    {% endmodelcache %}
+    {% endcachesweeper %}
 
 **Invalidating the fragment when the model changes**
 
 On a post_save invalidate the cache for the given model. There are two options, either have Memcached keep an internal version counter for each model or using the keyword `using` as a means of versioning the cache.
     
-    from myapp.utils import invalidate_cache_for
+    from cachesweeper.utils import invalidate_cache_for
     
     # using Memcached's internal counter
     def invalidate_vote_cache(sender, **kwargs):
