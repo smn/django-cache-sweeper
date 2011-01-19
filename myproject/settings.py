@@ -96,6 +96,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'south',
     'myapp',
+    'cachesweeper',
 )
 
 CACHE_BACKEND='memcached://127.0.0.1:11211'
