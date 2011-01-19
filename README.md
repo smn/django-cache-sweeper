@@ -3,6 +3,12 @@ Django Fragment Cache Invalidation
 
 Fragment cache invalidation by using a per model version token to prefix the cache keys. The version token can either be an internal memcached counter or a timestamped attribute from the model, such as `updated_at`.
 
+installation
+------------
+
+Install with `pip` or with `python setup.py install` and add 'cachesweeper' to your `settings.INSTALLED_APPS`
+
+
 post_save cache sweeper
 -----------------------
 

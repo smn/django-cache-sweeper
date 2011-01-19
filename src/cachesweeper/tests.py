@@ -3,12 +3,19 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 from django.utils.hashcompat import md5_constructor
-from cachesweeper.models import Comment, Article
+from django.core.management import call_command
+
 from cachesweeper.utils import cache_token_key_for_record, generate_fragment_cache_key_for_record
+from cachesweeper.test_models import Comment, Article
 
 class FragmentCacheInvalidation(TestCase):
     
     fixtures = ['test_auth_data', 'test_cachesweeper_data']
+    
+    def __init__(self, *args, **kwargs):
+        # I only want the test_models available for when running the tests
+        call_command('syncdb')
+        super(FragmentCacheInvalidation, self).__init__(*args, **kwargs)
     
     def setUp(self):
         pass
