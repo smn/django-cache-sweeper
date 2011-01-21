@@ -6,7 +6,7 @@ from django.utils.hashcompat import md5_constructor
 from django.core.management import call_command
 
 from cachesweeper.utils import cache_token_key_for_record, generate_fragment_cache_key_for_record
-from cachesweeper.test_models import Comment, Article
+from cachesweeper.test_models import Comment, Article, TestMixinModel, TestAttributeModel
 
 class FragmentCacheInvalidation(TestCase):
     
@@ -79,3 +79,17 @@ class FragmentCacheInvalidation(TestCase):
         
         # assert the cache miss
         self.assertFalse(cache.get(new_cache_key))
+    
+    def test_modelsweeper_mixin(self):
+        tmm = TestMixinModel(text='testing text')
+        tmm.save()
+        self.assertEquals(tmm.cachesweeper_version_key, 
+                        'cachesweeper.test_models:TestMixinModel:%s' % tmm.pk)
+        self.assertEquals(tmm.cachesweeper_version, 0)
+        tmm.save()
+        self.assertEquals(tmm.cachesweeper_version, 1)
+    
+    def test_modelsweeper_attr(self):
+        tam = TestAttributeModel(text='testing text')
+        tam.save()
+        

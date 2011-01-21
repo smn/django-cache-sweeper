@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from cachesweeper.utils import invalidate_cache_handler, invalidate_cache_for
+from cachesweeper.utils import invalidate_cache_handler, invalidate_cache_for, ModelSweeper
 
 # Create your models here.
 class Article(models.Model):
@@ -56,6 +56,14 @@ class Vote(models.Model):
     
     def __unicode__(self):
         return u"Vote %s1 for %s" % (self.direction, self.comment)
+
+
+class TestMixinModel(ModelSweeper, models.Model):
+    text = models.TextField(blank=True)
+
+class TestAttributeModel(models.Model):
+    text = models.TextField(blank=True)
+    cachesweeper = ModelSweeper()
 
 def invalidate_vote_cache(sender, **kwargs):
     instance = kwargs.get('instance')

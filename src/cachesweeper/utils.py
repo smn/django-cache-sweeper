@@ -1,6 +1,7 @@
 from django.core.cache import cache
 from django.utils.http import urlquote
 from django.utils.hashcompat import md5_constructor
+from django.db.models.signals import post_save
 
 def cache_token_key_for_record(record):
     """
@@ -74,3 +75,27 @@ def generate_fragment_cache_key_for_record(record, *cache_keys):
             unique_fragment_key_hash.hexdigest()
     )
     return cache_key
+
+class ModelSweeper(object):
+    
+    def __init__(self, *args, **kwargs):
+        super(ModelSweeper, self).__init__(*args, **kwargs)
+        post_save.connect(self._sweep_signal_handler, 
+                            sender=self.__class__, 
+                            dispatch_uid='%s-ModelSweeper' \
+                                % self.__class__.__name__)
+        
+    def _sweep_signal_handler(self, *args, **kwargs):
+        self.sweep()
+    
+    def sweep(self):
+        return invalidate_cache_for(self)
+    
+    @property
+    def cachesweeper_version_key(self):
+        return cache_token_key_for_record(self)
+    
+    @property
+    def cachesweeper_version(self):
+        return cache.get(self.cachesweeper_version_key)
+    
