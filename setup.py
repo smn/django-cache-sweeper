@@ -5,7 +5,7 @@ def listify(filename):
 
 setup(
     name = "django-cache-sweeper",
-    version = "0.1",
+    version = "0.1.1",
     url = 'http://github.com/smn/django-cache-sweeper',
     license = 'BSD',
     description = "Lazy Django fragment cache sweeping",
