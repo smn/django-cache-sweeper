@@ -50,6 +50,7 @@ def update_cache_token_for_record_with_attribute(instance, token_attr):
     token_value = getattr(instance,token_attr)
     token_value_hash = md5_constructor(str(token_value)).hexdigest()
     cache.set(cache_key, token_value_hash, 0) # 0 = no time based expiry
+    return token_value_hash
 
 def update_cache_token_for_record_with_counter(instance):
     """
@@ -57,10 +58,11 @@ def update_cache_token_for_record_with_counter(instance):
     """
     cache_key = cache_token_key_for_record(instance)
     value = cache.get(cache_key)
-    if value == None or not isinstance(value, int):
+    if value == None:
         cache.set(cache_key, 0, 0) # 0 = no time based expiry
+        return 0
     else:
-        cache.incr(cache_key)
+        return cache.incr(cache_key)
     
 
 
@@ -68,7 +70,14 @@ def generate_fragment_cache_key_for_record(record, *cache_keys):
     unique_fragment_key = u":".join(map(lambda key: urlquote(str(key)), cache_keys))
     unique_fragment_key_hash = md5_constructor(unique_fragment_key)
     record_version_key = cache_token_key_for_record(record)
-    record_current_version = cache.get(record_version_key)
+    record_current_version = cache.get(record_version_key, None)
+    
+    # cache miss for a record that hasn't been versioned yet or
+    # has been expired by memcached
+    if record_current_version == None:
+        cache.set(record_version_key, 0, 0)
+        record_current_version = 0
+    
     cache_key = 'cachesweeper.%s.%s.%s' % (
             record_version_key, 
             record_current_version,
@@ -97,5 +106,9 @@ class ModelSweeper(object):
     
     @property
     def cachesweeper_version(self):
-        return cache.get(self.cachesweeper_version_key)
+        cached_version = cache.get(self.cachesweeper_version_key)
+        if cached_version is not None:
+            return cached_version
+        else:
+            return update_cache_token_for_record_with_counter(self)
     

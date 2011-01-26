@@ -18,18 +18,19 @@ class FragmentCacheInvalidation(TestCase):
         super(FragmentCacheInvalidation, self).__init__(*args, **kwargs)
     
     def setUp(self):
-        pass
+        cache.clear()
     
     def tearDown(self):
         pass
     
     def test_version_at_creation(self):
         comment = Comment.objects.latest()
+        comment.like_it()
         version_cache_key = cache_token_key_for_record(comment)
         # the cache version token should be zero as we've just created the record
         # by loading the fixtures. At creation the cache version should be
         # zero
-        self.assertTrue(cache.get(version_cache_key))
+        self.assertEquals(cache.get(version_cache_key), 0)
     
     def test_version_after_save(self):
         # get the comment we want to invalidate the cache for
@@ -38,11 +39,9 @@ class FragmentCacheInvalidation(TestCase):
         version_cache_key = cache_token_key_for_record(comment)
         # get the original version, should be zero
         original_version = cache.get(version_cache_key, None)
-        self.assertNotEquals(original_version, None)
         # change the comment & save, should increment the version value in
         # memcached
         comment.like_it()
-        comment.save()
         # get the new version value for the comment
         new_version = cache.get(version_cache_key)
         self.assertNotEquals(original_version, new_version)
@@ -71,7 +70,6 @@ class FragmentCacheInvalidation(TestCase):
         
         # modifying the model should change the cache
         comment.like_it()
-        comment.save()
         
         # assert the changed cache key
         new_cache_key = generate_fragment_cache_key_for_record(comment, "comment.xml")
@@ -89,7 +87,14 @@ class FragmentCacheInvalidation(TestCase):
         tmm.save()
         self.assertEquals(tmm.cachesweeper_version, 1)
     
-    def test_modelsweeper_attr(self):
-        tam = TestAttributeModel(text='testing text')
-        tam.save()
-        
+    def test_default_version_zero(self):
+        tmm = TestMixinModel(text='testing text')
+        tmm.save()
+        cache.delete(tmm.cachesweeper_version_key)
+        self.assertEquals(tmm.cachesweeper_version, 0)
+        tmm.save()
+        self.assertEquals(tmm.cachesweeper_version, 1)
+    
+    # def test_modelsweeper_manager(self):
+    #     tmm = TestManagerModel(text='testing text')
+    #     self.assertTrue(hasattr(tmm.cachesweeper,'cachesweeper'))
